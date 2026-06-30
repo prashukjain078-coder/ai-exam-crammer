@@ -139,5 +139,114 @@
   }
 }
 
+/* LIGHT MODE ENHANCEMENTS */
+.light {
+  /* We map standard slate-950 (which was deep black) to solid crisp white */
+  --color-slate-950: #ffffff;
+  
+  /* bg-slate-900 (inner panels, tables, secondary backgrounds) becomes a very soft elegant slate-100 */
+  --color-slate-900: #f1f5f9;
+  
+  /* border-slate-800 becomes a clean slate-200 border */
+  --color-slate-800: #e2e8f0;
+  
+  /* border-slate-700 becomes slate-300 */
+  --color-slate-700: #cbd5e1;
+  
+  /* text-slate-400 (secondary text) becomes beautiful mid-slate for crisp readability */
+  --color-slate-400: #475569;
+  
+  /* text-slate-300 (standard text) becomes high-contrast charcoal slate-800 */
+  --color-slate-300: #1e293b;
+  
+  /* text-slate-200 and text-slate-100 become deep near-black */
+  --color-slate-200: #0f172a;
+  --color-slate-100: #020617;
+  
+  /* Swap standard gray color properties */
+  --color-gray-100: #020617;
+  --color-gray-200: #0f172a;
+  --color-gray-300: #1e293b;
+  --color-gray-400: #475569;
+  --color-gray-500: #64748b;
+  --color-gray-600: #cbd5e1;
+  --color-gray-700: #e2e8f0;
+  --color-gray-800: #f1f5f9;
+  --color-gray-900: #f8fafc;
+  --color-gray-950: #ffffff;
+
+  /* Custom overrides for backgrounds, gradients, and custom scrollbar */
+  color-scheme: light;
+}
+
+/* Light mode specific scrollbar overrides */
+.light ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+.light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+.light ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Selector-based override for headers/titles so they change to dark text in light mode,
+   while keeping text white on button backgrounds */
+.light h1, 
+.light h2, 
+.light h3, 
+.light h4, 
+.light h5, 
+.light h6,
+.light .text-white-toggle,
+.light p.text-white,
+.light div.text-white {
+  --color-white: #0f172a;
+}
+
+/* Prevent inputs from having white text color */
+.light input,
+.light textarea,
+.light select {
+  color: #0f172a !important;
+}
+
+/* Prevent button and badged text-white from turning dark */
+.light button .text-white,
+.light button.text-white,
+.light [class*="bg-indigo"] .text-white,
+.light [class*="bg-violet"] .text-white,
+.light [class*="bg-rose"] .text-white,
+.light [class*="bg-gradient"] .text-white,
+.light [class*="bg-emerald"] .text-white,
+.light [class*="bg-amber"] .text-white,
+.light .badge .text-white,
+.light .badge.text-white {
+  --color-white: #ffffff !important;
+}
+
+/* Make sure text gradients are legible and high-contrast in light mode */
+.light .from-white {
+  --tw-gradient-from: #0f172a !important;
+}
+.light .via-gray-200 {
+  --tw-gradient-via: #334155 !important;
+}
+.light .to-indigo-200 {
+  --tw-gradient-to: #4f46e5 !important;
+}
+.light .via-indigo-100 {
+  --tw-gradient-via: #4f46e5 !important;
+}
+.light .to-indigo-300 {
+  --tw-gradient-to: #312e81 !important;
+}
+
+/* Subtle light grid background */
+.light .bg-grid-animated {
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px) !important;
+}
+
 
 

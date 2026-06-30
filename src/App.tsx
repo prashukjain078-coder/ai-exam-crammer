@@ -31,7 +31,9 @@ import {
   ScanSearch,
   MessageSquare,
   CalendarDays,
-  Swords
+  Swords,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { CramSession } from './types';
 import { SAMPLE_CRAM_SESSIONS } from './data';
@@ -71,6 +73,25 @@ const PRESETS = [
 ];
 
 export default function App() {
+  // Theme state (Dark/Light Mode)
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('crammer_theme');
+      return (saved as 'dark' | 'light') || 'dark';
+    }
+    return 'dark';
+  });
+
+  useEffect(() => {
+    document.documentElement.classList.remove('dark', 'light');
+    document.documentElement.classList.add(theme);
+    localStorage.setItem('crammer_theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+  };
+
   // Persistence state
   const [sessions, setSessions] = useState<CramSession[]>([]);
   const [activeSessionId, setActiveSessionId] = useState<string>('');
@@ -469,7 +490,7 @@ export default function App() {
 
   if (introState !== 'dismissed') {
     return (
-      <div className="fixed inset-0 z-50 bg-[#040508] text-white flex flex-col items-center justify-between py-12 px-4 select-none overflow-hidden font-sans">
+      <div className="fixed inset-0 z-50 bg-slate-900 text-white flex flex-col items-center justify-between py-12 px-4 select-none overflow-hidden font-sans">
         {/* Background stars & glowing nebulae */}
         <div className="absolute inset-0 -z-10 pointer-events-none">
           <div className="absolute top-[20%] left-[15%] w-[35vw] h-[35vw] bg-indigo-500/10 blur-[120px] rounded-full animate-pulse" />
@@ -670,7 +691,7 @@ export default function App() {
   // Secure User Auth Gateway (Cognitive Study Portal Entrance)
   if (!currentUser) {
     return (
-      <div className="min-h-screen bg-[#040508] text-white flex flex-col items-center justify-center p-4 relative font-sans overflow-hidden select-none">
+      <div className="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-4 relative font-sans overflow-hidden select-none">
         {/* Background stars & glowing nebulae */}
         <div className="absolute inset-0 -z-10 pointer-events-none">
           <div className="absolute top-[30%] left-[20%] w-[40vw] h-[40vw] bg-indigo-500/10 blur-[130px] rounded-full animate-pulse" />
@@ -822,7 +843,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#06070b] text-gray-100 selection:bg-indigo-500 selection:text-white font-sans antialiased pb-12">
+    <div className="min-h-screen bg-slate-900 text-slate-100 selection:bg-indigo-500 selection:text-white font-sans antialiased pb-12">
       
       {/* Background gradients */}
       <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
@@ -886,6 +907,13 @@ export default function App() {
               title="Custom API Key Override"
             >
               <Key size={16} />
+            </button>
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-indigo-400 hover:border-indigo-500/20 transition-all cursor-pointer flex items-center justify-center"
+              title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            >
+              {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
             </button>
           </div>
         </div>
