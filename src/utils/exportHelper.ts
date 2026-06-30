@@ -21,6 +21,24 @@ export function exportSessionToPrintableHTML(session: CramSession): string {
   // Header and base layout styles
   let contentHtml = '';
 
+  const badgeLabels: Record<string, string> = {
+    crammer: 'Exhaustive Cheat Sheet',
+    flashcards: 'Active Recall Flashcards',
+    quiz: 'Practice Exam Booklet',
+    simplifier: 'Feynman Study Companion',
+    mnemonicForge: 'Mnemonic Forge Deck',
+    speedReview: 'Speed Panic Review',
+    conceptMap: 'Topic Connections Map',
+    formulaExtractor: 'Theorem & Formulas Extractor',
+    essayPredictor: 'Essay Predictions Guide',
+    paperSimulator: 'Simulated Exam Paper',
+    gapFinder: 'Curriculum Gaps Diagnostic',
+    socraticTutor: 'Socratic Dialogue Booklet',
+    timelineBuilder: 'Chronology Milestones Map',
+    debateSparring: 'Devil\'s Advocate Sparring Arena',
+  };
+  const badgeLabel = badgeLabels[presetId] || 'Study Companion';
+
   if (presetId === 'crammer') {
     const summary = parsedContent.summary || '';
     const keyConcepts = parsedContent.keyConcepts || [];
@@ -194,6 +212,493 @@ export function exportSessionToPrintableHTML(session: CramSession): string {
                 <div class="analogy-sub-box">
                   <h4 class="sub-box-title">🚀 Playground Analogy</h4>
                   <p class="sub-box-body">${item.analogy}</p>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  } else if (presetId === 'mnemonicForge') {
+    const mnemonics = parsedContent.mnemonics || [];
+    contentHtml = `
+      <div class="summary-box" style="border-left-color: #a855f7;">
+        <h2 class="section-title" style="color: #6b21a8;">Mnemonic Forge Deck</h2>
+        <p class="summary-text">
+          Highly retention-optimized memory aids including acronyms, vivid mental stories, rhymes, and visual story hooks.
+        </p>
+      </div>
+
+      <div class="section-container">
+        <h2 class="section-title">🧠 Mnemonics and Memory Palace Codes (${mnemonics.length})</h2>
+        <div class="grid-layout">
+          ${mnemonics.map((item: any, i: number) => `
+            <div class="card" style="border-top: 4px solid #a855f7; page-break-inside: avoid;">
+              <div class="card-num">${i + 1}</div>
+              <span class="badge" style="background-color: #f3e8ff; color: #6b21a8; font-family: monospace;">ACRONYM: ${item.acronym || 'None'}</span>
+              <h3 class="card-title" style="margin-top: 10px;">${item.concept}</h3>
+              
+              <div style="margin-top: 12px; font-size: 13px; color: #374151;">
+                <p style="margin: 0 0 8px 0; line-height: 1.5;"><strong>Memory Palace Story:</strong> <span style="font-style: italic;">"${item.memoryStory}"</span></p>
+                ${item.rhyme ? `<p style="margin: 0 0 8px 0; font-family: monospace; padding: 6px; background-color: #f9fafb; border-radius: 4px;"><strong>Rhyme/Rhythm:</strong><br/>${item.rhyme.replace(/\n/g, '<br/>')}</p>` : ''}
+                <p style="margin: 0; font-size: 12px; color: #6b7280;"><strong>Visual Story Hook:</strong> ${item.visualScene}</p>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  } else if (presetId === 'speedReview') {
+    const speedCards = parsedContent.speedCards || [];
+    contentHtml = `
+      <div class="summary-box" style="border-left-color: #eab308;">
+        <h2 class="section-title" style="color: #854d0e;">30-Minute Speed Panic Review Sheet</h2>
+        <p class="summary-text">
+          High-yield quick fact sheet designed for last-minute cramming. Includes key one-liners, critical takeaways, and common mark loss traps to avoid.
+        </p>
+      </div>
+
+      <div class="section-container">
+        <h2 class="section-title">⚡ High-Yield Speed Cards (${speedCards.length})</h2>
+        <div class="list-layout">
+          ${speedCards.map((card: any, i: number) => `
+            <div class="card" style="border-top: 4px solid #eab308; padding: 16px; margin-bottom: 12px; page-break-inside: avoid;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
+                <span class="badge" style="background-color: #fef9c3; color: #854d0e;">TOPIC #${i + 1}: ${card.topic}</span>
+                <span style="font-family: monospace; font-size: 11px; font-weight: bold; color: #ca8a04;">CRITICAL FACT: ${card.criticalFact}</span>
+              </div>
+              <p style="font-size: 14px; font-weight: 600; color: #1f2937; margin: 0 0 8px 0;">
+                ${card.oneLiner}
+              </p>
+              <div style="background-color: #fef2f2; border-left: 3px solid #ef4444; padding: 8px 12px; border-radius: 4px; font-size: 12px; color: #991b1b;">
+                <strong>Common Mark Loss Trap:</strong> ${card.commonMistake}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  } else if (presetId === 'conceptMap') {
+    const nodes = parsedContent.nodes || [];
+    const rootTopic = parsedContent.rootTopic || 'Core Concept Map';
+    contentHtml = `
+      <div class="summary-box" style="border-left-color: #06b6d4;">
+        <h2 class="section-title" style="color: #0891b2;">Topic Connections Concept Map</h2>
+        <p class="summary-text">
+          A high-density structural mapping of the core curriculum. This outline lists key topic nodes, their respective contextual descriptions, and direct logical connections.
+        </p>
+      </div>
+
+      <div class="section-container">
+        <h2 class="section-title">🗺️ Structured Concept Relations Map: ${rootTopic}</h2>
+        <div class="list-layout">
+          ${nodes.map((node: any) => {
+            const connectedNodes = (node.connections || []).map((cId: number) => {
+              const target = nodes.find((n: any) => n.id === cId);
+              return target ? target.label : `#${cId}`;
+            }).filter(Boolean);
+
+            return `
+              <div class="list-item" style="border-left: 3px solid ${node.isRoot ? '#6366f1' : '#06b6d4'}; margin-bottom: 12px; page-break-inside: avoid;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="badge" style="background-color: ${node.isRoot ? '#e0e7ff' : '#ecfeff'}; color: ${node.isRoot ? '#3730a3' : '#155e75'};">
+                    ${node.isRoot ? 'ROOT TOPIC' : `NODE #${node.id}`}
+                  </span>
+                  <span style="font-size: 14px; font-weight: 700; color: #0f172a; font-family: monospace;">${node.label}</span>
+                </div>
+                <p style="font-size: 13px; color: #334155; margin: 4px 0 8px 0; line-height: 1.5;">
+                  ${node.description}
+                </p>
+                ${connectedNodes.length > 0 ? `
+                  <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center;">
+                    <span style="font-size: 10px; font-family: monospace; color: #94a3b8; text-transform: uppercase;">Direct Connections:</span>
+                    ${connectedNodes.map((label: string) => `
+                      <span style="font-size: 10px; font-family: monospace; background-color: #f1f5f9; color: #475569; padding: 2px 6px; border-radius: 4px; border: 1px solid #e2e8f0;">
+                        ${label}
+                      </span>
+                    `).join('')}
+                  </div>
+                ` : ''}
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  } else if (presetId === 'formulaExtractor') {
+    const formulas = parsedContent.formulas || [];
+    contentHtml = `
+      <div class="summary-box" style="border-left-color: #22c55e;">
+        <h2 class="section-title" style="color: #166534;">Theorem & Formula Reference Sheet</h2>
+        <p class="summary-text">
+          Extracted equations complete with comprehensive variable checklists, worked numeric calculation walkthroughs, conditions of applicability, and exam pitfalls.
+        </p>
+      </div>
+
+      <div class="section-container">
+        <h2 class="section-title">📐 Extracted Formulas (${formulas.length})</h2>
+        <div class="list-layout">
+          ${formulas.map((formula: any, i: number) => `
+            <div class="card" style="border-top: 4px solid #22c55e; margin-bottom: 20px; page-break-inside: avoid;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; margin-bottom: 12px;">
+                <h3 class="card-title" style="margin: 0;">${i + 1}. ${formula.name}</h3>
+                <span style="font-family: monospace; font-size: 14px; font-weight: bold; color: #166534; background-color: #f0fdf4; padding: 2px 8px; border-radius: 6px;">
+                  ${formula.expression}
+                </span>
+              </div>
+
+              <div style="margin-bottom: 12px;">
+                <span style="font-size: 11px; font-family: monospace; color: #4b5563; font-weight: bold; display: block; margin-bottom: 4px; text-transform: uppercase;">Variables Checklist:</span>
+                <table style="width: 100%; border-collapse: collapse; font-size: 11px; font-family: monospace; text-align: left;">
+                  <thead>
+                    <tr style="background-color: #f9fafb; color: #4b5563; border-bottom: 1px solid #e5e7eb;">
+                      <th style="padding: 4px 8px; width: 20%;">Symbol</th>
+                      <th style="padding: 4px 8px; width: 60%;">Meaning</th>
+                      <th style="padding: 4px 8px; width: 20%;">SI Unit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${(formula.variables || []).map((v: any) => `
+                      <tr style="border-bottom: 1px solid #f3f4f6;">
+                        <td style="padding: 4px 8px; font-weight: bold; color: #16a34a;">${v.symbol}</td>
+                        <td style="padding: 4px 8px; color: #374151;">${v.meaning}</td>
+                        <td style="padding: 4px 8px; color: #6b7280;">${v.unit || '—'}</td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
+
+              <div style="margin-bottom: 12px; background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px; font-family: monospace; font-size: 11px; white-space: pre-wrap;">
+                <strong style="font-family: sans-serif; color: #374151; display: block; margin-bottom: 4px; text-transform: uppercase; font-size: 10px;">Worked Numeric Example:</strong>
+                ${formula.workedExample}
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr; gap: 10px;">
+                <div style="background-color: #eff6ff; border-left: 3px solid #3b82f6; padding: 8px 12px; border-radius: 4px; font-size: 11px;">
+                  <strong style="color: #1e40af; text-transform: uppercase; display: block; margin-bottom: 2px;">Conditions of Applicability:</strong>
+                  <span style="color: #1e3a8a;">${formula.conditions}</span>
+                </div>
+                <div style="background-color: #fef2f2; border-left: 3px solid #ef4444; padding: 8px 12px; border-radius: 4px; font-size: 11px;">
+                  <strong style="color: #991b1b; text-transform: uppercase; display: block; margin-bottom: 2px;">Exam Pitfall / Trap:</strong>
+                  <span style="color: #7f1d1d;">${formula.examTrap}</span>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  } else if (presetId === 'essayPredictor') {
+    const essays = parsedContent.essays || [];
+    contentHtml = `
+      <div class="summary-box" style="border-left-color: #f43f5e;">
+        <h2 class="section-title" style="color: #be123c;">Essay Predictions & Long-Answer Study Guide</h2>
+        <p class="summary-text">
+          Predicted long-answer questions constructed with corresponding examiner marking criteria, structural model response skeletons, and mandatory high-value key terms.
+        </p>
+      </div>
+
+      <div class="section-container">
+        <h2 class="section-title">✍️ Predicted Long-Answer Questions (${essays.length})</h2>
+        <div class="list-layout">
+          ${essays.map((essay: any, i: number) => `
+            <div class="card" style="border-top: 4px solid #f43f5e; margin-bottom: 24px; page-break-inside: avoid;">
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; margin-bottom: 12px;">
+                <span class="badge" style="background-color: #ffe4e6; color: #9f1239; font-size: 10px;">LONG QUESTION #${i + 1}</span>
+                <div style="font-size: 11px; font-family: monospace; color: #64748b; font-weight: bold;">
+                  Difficulty: <span style="color: #e11d48;">${essay.difficulty}</span> &bull; Time: ${essay.timeMinutes} mins
+                </div>
+              </div>
+
+              <p style="font-family: Georgia, serif; font-size: 16px; font-weight: bold; line-height: 1.5; color: #0f172a; margin: 0 0 16px 0; font-style: italic;">
+                "${essay.question}"
+              </p>
+
+              <div style="margin-bottom: 14px;">
+                <span style="font-size: 10px; font-family: monospace; color: #475569; font-weight: bold; display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">Examiner's Marking Criteria Checklist:</span>
+                <ul style="margin: 0; padding-left: 20px; font-size: 12px; color: #334155; line-height: 1.6;">
+                  ${(essay.markingCriteria || []).map((crit: string) => `
+                    <li style="margin-bottom: 4px;">${crit}</li>
+                  `).join('')}
+                </ul>
+              </div>
+
+              <div style="margin-bottom: 14px;">
+                <span style="font-size: 10px; font-family: monospace; color: #475569; font-weight: bold; display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">Model Response Skeleton:</span>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                  ${(essay.modelSkeleton || []).map((step: string, sIdx: number) => `
+                    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 8px 12px; border-radius: 6px; font-size: 11px; line-height: 1.5;">
+                      <strong>Part ${sIdx + 1} (${step.split(':')[0] || 'Structure'}):</strong>
+                      <span style="color: #475569;">${step.split(':').slice(1).join(':').trim() || step}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+
+              <div>
+                <span style="font-size: 10px; font-family: monospace; color: #475569; font-weight: bold; display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">High-Value Keywords (Examiner Targets):</span>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                  ${(essay.keywordsToUse || []).map((word: string) => `
+                    <span style="font-size: 10px; font-family: monospace; background-color: #fff1f2; color: #be123c; border: 1px solid #fecdd3; padding: 2px 6px; border-radius: 4px;">
+                      ${word}
+                    </span>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  } else if (presetId === 'paperSimulator') {
+    contentHtml = `
+      <div class="summary-box" style="border-left-color: #6366f1;">
+        <h2 class="section-title" style="color: #4f46e5;">Simulated Past Examination Booklet</h2>
+        <p class="summary-text">
+          A fully assembled trial past paper tiered dynamically by Easy, Medium, and Hard task difficulties. Study under timed conditions, then cross-examine your answers using the master model answers on the final pages.
+        </p>
+      </div>
+
+      <div class="section-container">
+        <h2 class="section-title" style="border-bottom: 2px solid #10b981; color: #047857;">Section A: Knowledge & Recall (Easy Tier)</h2>
+        <div class="list-layout">
+          ${(parsedContent.easy || []).map((q: any, i: number) => `
+            <div class="card" style="border-left: 4px solid #10b981; margin-bottom: 16px; page-break-inside: avoid;">
+              <div style="display: flex; justify-content: space-between; font-size: 11px; font-family: monospace; color: #64748b; margin-bottom: 6px;">
+                <span>Easy Question A${i + 1} (${q.topic})</span>
+                <strong>[${q.marks} Marks]</strong>
+              </div>
+              <p style="font-size: 13.5px; color: #0f172a; font-weight: bold; margin: 0 0 10px 0;">${q.question}</p>
+              <div style="font-size: 11.5px; color: #475569; background-color: #f8fafc; border-radius: 6px; padding: 10px; border: 1px dashed #e2e8f0;">
+                <strong>Correct Response Guide:</strong> ${q.modelAnswer}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="page-break"></div>
+
+      <div class="section-container">
+        <h2 class="section-title" style="border-bottom: 2px solid #f59e0b; color: #b45309;">Section B: Analysis & Application (Medium Tier)</h2>
+        <div class="list-layout">
+          ${(parsedContent.medium || []).map((q: any, i: number) => `
+            <div class="card" style="border-left: 4px solid #f59e0b; margin-bottom: 16px; page-break-inside: avoid;">
+              <div style="display: flex; justify-content: space-between; font-size: 11px; font-family: monospace; color: #64748b; margin-bottom: 6px;">
+                <span>Medium Question B${i + 1} (${q.topic})</span>
+                <strong>[${q.marks} Marks]</strong>
+              </div>
+              <p style="font-size: 13.5px; color: #0f172a; font-weight: bold; margin: 0 0 10px 0;">${q.question}</p>
+              <div style="font-size: 11.5px; color: #475569; background-color: #f8fafc; border-radius: 6px; padding: 10px; border: 1px dashed #e2e8f0;">
+                <strong>Correct Response Guide:</strong> ${q.modelAnswer}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="page-break"></div>
+
+      <div class="section-container">
+        <h2 class="section-title" style="border-bottom: 2px solid #ef4444; color: #b91c1c;">Section C: Synthesis & Evaluation (Hard Tier)</h2>
+        <div class="list-layout">
+          ${(parsedContent.hard || []).map((q: any, i: number) => `
+            <div class="card" style="border-left: 4px solid #ef4444; margin-bottom: 16px; page-break-inside: avoid;">
+              <div style="display: flex; justify-content: space-between; font-size: 11px; font-family: monospace; color: #64748b; margin-bottom: 6px;">
+                <span>Hard Question C${i + 1} (${q.topic})</span>
+                <strong>[${q.marks} Marks]</strong>
+              </div>
+              <p style="font-size: 13.5px; color: #0f172a; font-weight: bold; margin: 0 0 10px 0;">${q.question}</p>
+              <div style="font-size: 11.5px; color: #475569; background-color: #f8fafc; border-radius: 6px; padding: 10px; border: 1px dashed #e2e8f0;">
+                <strong>Correct Response Guide:</strong> ${q.modelAnswer}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  } else if (presetId === 'gapFinder') {
+    const gaps = parsedContent.gaps || [];
+    contentHtml = `
+      <div class="summary-box" style="border-left-color: #f97316;">
+        <h2 class="section-title" style="color: #ea580c;">Curriculum Gap Finder & Intervention Report</h2>
+        <p class="summary-text">
+          Identified curriculum vulnerabilities requiring active study intervention. Each identified gap contains diagnostic details, a 3-step micro-study fix, and a complex understanding check question.
+        </p>
+      </div>
+
+      <div class="section-container">
+        <h2 class="section-title">🔍 Diagnostic Focus Gaps (${gaps.length})</h2>
+        <div class="list-layout">
+          ${gaps.map((gap: any, i: number) => `
+            <div class="card" style="border-top: 4px solid #f97316; margin-bottom: 24px; page-break-inside: avoid;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; margin-bottom: 12px;">
+                <h3 class="card-title" style="margin: 0;">${i + 1}. ${gap.topic}</h3>
+                <span class="badge" style="background-color: #ffedd5; color: #ea580c; font-family: monospace;">SECTION: ${gap.docSection || 'General'}</span>
+              </div>
+
+              <div style="background-color: #fffbeb; border-left: 3px solid #f59e0b; padding: 10px; border-radius: 6px; font-size: 12px; color: #78350f; margin-bottom: 14px;">
+                <strong>Why Students Fail This Concept:</strong> ${gap.whyHard}
+              </div>
+
+              <div style="margin-bottom: 14px;">
+                <span style="font-size: 10px; font-family: monospace; color: #475569; font-weight: bold; display: block; margin-bottom: 6px; text-transform: uppercase;">10-Minute Micro-Study Intervention Plan:</span>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                  ${(gap.microStudy || []).map((step: string, sIdx: number) => `
+                    <div style="font-size: 11.5px; color: #334155;">
+                      <strong>Step ${sIdx + 1}:</strong> ${step}
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+
+              <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; font-size: 11.5px;">
+                <span style="font-size: 9px; font-family: monospace; color: #f97316; font-weight: bold; display: block; margin-bottom: 4px; text-transform: uppercase;">Killer Understanding Verification Question:</span>
+                <p style="font-weight: bold; color: #0f172a; margin: 0 0 8px 0;">${gap.killerQ}</p>
+                <div style="border-top: 1px dashed #cbd5e1; margin-top: 6px; padding-top: 6px; color: #475569; font-family: monospace; font-size: 11px;">
+                  <strong>Model Solution:</strong> ${gap.killerA}
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  } else if (presetId === 'socraticTutor') {
+    const seedQuestions = parsedContent.seedQuestions || [];
+    const branches = parsedContent.branches || [];
+    contentHtml = `
+      <div class="summary-box" style="border-left-color: #14b8a6;">
+        <h2 class="section-title" style="color: #0d9488;">Socratic Study Companion & Dialogues</h2>
+        <p class="summary-text">
+          An interactive, Socratic dialogue booklet. Walks through custom diagnostic branches analyzing wrong, partial, and correct logical paths to build a rigorous conceptual foundation.
+        </p>
+      </div>
+
+      <div class="section-container">
+        <h2 class="section-title">💭 Socratic Core Challenge & Dialogues</h2>
+        <div class="card" style="border-left: 4px solid #14b8a6; padding: 20px; margin-bottom: 24px; page-break-inside: avoid;">
+          <span style="font-size: 10px; font-family: monospace; color: #0d9488; font-weight: bold; display: block; margin-bottom: 2px; text-transform: uppercase;">Opening Socratic Thesis:</span>
+          <p style="font-size: 15px; font-weight: bold; color: #0f172a; line-height: 1.6; margin: 4px 0 0 0;">
+            "${parsedContent.openingQuestion}"
+          </p>
+        </div>
+
+        <h3 style="font-family: monospace; font-size: 12px; font-weight: bold; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 12px;">Socratic Cognitive Path Analysis</h3>
+        <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 30px;">
+          ${branches.map((branch: any) => `
+            <div style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; page-break-inside: avoid;">
+              <div style="background-color: ${branch.answerType === 'correct' ? '#f0fdf4' : branch.answerType === 'partial' ? '#fffbeb' : '#fef2f2'}; border-bottom: 1px solid #e2e8f0; padding: 8px 12px; display: flex; justify-content: space-between; font-family: monospace; font-size: 11px; font-weight: bold; color: ${branch.answerType === 'correct' ? '#166534' : branch.answerType === 'partial' ? '#854d0e' : '#991b1b'};">
+                <span>Logical Response Category: ${branch.answerType.toUpperCase()}</span>
+              </div>
+              <div style="padding: 12px; font-size: 12px;">
+                <p style="margin: 0 0 8px 0; color: #374151;"><strong>Tutor Guidance:</strong> ${branch.guidance}</p>
+                <p style="margin: 0; font-style: italic; color: #4b5563; border-left: 2px solid #cbd5e1; padding-left: 8px;">
+                  "Follow-up: ${branch.followUp}"
+                </p>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <h3 style="font-family: monospace; font-size: 12px; font-weight: bold; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 12px;">Self-Reflection Seed Topics</h3>
+        <div class="grid-layout">
+          ${seedQuestions.map((seed: any, i: number) => `
+            <div class="card" style="border: 1px solid #e2e8f0; padding: 14px; border-radius: 8px; page-break-inside: avoid;">
+              <span style="font-size: 9px; font-family: monospace; color: #94a3b8; font-weight: bold; display: block; text-transform: uppercase;">SEED #${i + 1}: ${seed.topic}</span>
+              <p style="font-size: 12px; color: #334155; margin: 4px 0 0 0; line-height: 1.5; font-weight: 500;">
+                "${seed.question}"
+              </p>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  } else if (presetId === 'timelineBuilder') {
+    const entries = parsedContent.entries || [];
+    contentHtml = `
+      <div class="summary-box" style="border-left-color: #ec4899;">
+        <h2 class="section-title" style="color: #db2777;">Curriculum Chronological Map</h2>
+        <p class="summary-text">
+          Subject timeline tracking discoveries, milestones, causes/effects, historical/scientific eras, and key stakeholders.
+        </p>
+      </div>
+
+      <div class="section-container">
+        <h2 class="section-title">⏳ Chronology & Epoch Milestones Map</h2>
+        <div style="position: relative; padding-left: 24px; border-left: 2px solid #e2e8f0; margin-left: 10px;">
+          ${entries.map((entry: any, i: number) => `
+            <div style="position: relative; margin-bottom: 24px; page-break-inside: avoid;">
+              <!-- Timeline Dot -->
+              <div style="position: absolute; left: -31px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background-color: #ec4899; border: 3px solid #ffffff; box-shadow: 0 0 0 2px #fbcfe8;"></div>
+              
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
+                <span style="font-family: monospace; font-size: 13px; font-weight: bold; color: #ec4899; background-color: #fce7f3; padding: 2px 8px; border-radius: 4px;">
+                  ${entry.date}
+                </span>
+                <span style="font-size: 10px; font-family: monospace; color: #64748b; font-weight: bold; text-transform: uppercase;">
+                  ERA: ${entry.era}
+                </span>
+              </div>
+
+              <h3 style="font-size: 14px; font-weight: bold; color: #0f172a; margin: 4px 0 6px 0;">${entry.event}</h3>
+              <p style="font-size: 12.5px; color: #334155; margin: 0 0 8px 0; line-height: 1.5;">${entry.significance}</p>
+              
+              <div style="display: grid; grid-template-columns: 1fr; gap: 8px; font-size: 11px; color: #64748b; font-family: monospace; background-color: #f9fafb; padding: 8px 12px; border-radius: 6px; border: 1px solid #f1f5f9;">
+                ${entry.people ? `<div><strong>Stakeholders:</strong> ${entry.people}</div>` : ''}
+                ${entry.causeEffect ? `<div><strong>Causal Mechanics:</strong> ${entry.causeEffect}</div>` : ''}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  } else if (presetId === 'debateSparring') {
+    const debates = parsedContent.debates || [];
+    contentHtml = `
+      <div class="summary-box" style="border-left-color: #64748b;">
+        <h2 class="section-title" style="color: #475569;">Devil's Advocate Argumentation Matrix</h2>
+        <p class="summary-text">
+          A collection of debates, pitting mainstream consensus against strong counter-arguments. Includes targeted defence guidelines and key logical holes to protect.
+        </p>
+      </div>
+
+      <div class="section-container">
+        <h2 class="section-title">⚔️ Analytical Argumentation Matrix</h2>
+        <div class="card" style="border-left: 4px solid #ef4444; padding: 18px; margin-bottom: 24px; page-break-inside: avoid; background-color: #fff5f5;">
+          <span style="font-size: 10px; font-family: monospace; color: #b91c1c; font-weight: bold; display: block; text-transform: uppercase;">Opening Battleground Challenge:</span>
+          <p style="font-size: 14.5px; font-weight: bold; color: #7f1d1d; line-height: 1.5; margin: 4px 0 0 0; font-style: italic;">
+            "${parsedContent.openingChallenge}"
+          </p>
+        </div>
+
+        <div class="list-layout">
+          ${debates.map((row: any, i: number) => `
+            <div class="card" style="border-top: 4px solid #64748b; margin-bottom: 24px; page-break-inside: avoid;">
+              <h3 class="card-title" style="font-size: 14px; font-weight: bold; color: #0f172a; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; margin-bottom: 12px;">
+                Debate Topic #${i + 1}: ${row.topic}
+              </h3>
+
+              <div style="display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 12px;">
+                <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 10px; border-radius: 6px; font-size: 12px;">
+                  <strong style="color: #475569; text-transform: uppercase; display: block; font-size: 9px; font-family: monospace; margin-bottom: 2px;">Mainstream Consensus Position:</strong>
+                  <p style="margin: 0; color: #334155; line-height: 1.5;">${row.mainstreamView}</p>
+                </div>
+                <div style="background-color: #fff5f5; border: 1px solid #fecdd3; padding: 10px; border-radius: 6px; font-size: 12px;">
+                  <strong style="color: #b91c1c; text-transform: uppercase; display: block; font-size: 9px; font-family: monospace; margin-bottom: 2px;">AI Devil's Advocate Rebuttal:</strong>
+                  <p style="margin: 0; color: #7f1d1d; line-height: 1.5;">${row.counterArgument}</p>
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr; gap: 10px;">
+                <div style="background-color: #fff7ed; border-left: 3px solid #f97316; padding: 8px 12px; border-radius: 4px; font-size: 11.5px;">
+                  <strong style="color: #c2410c; text-transform: uppercase; display: block; font-size: 9px; font-family: monospace; margin-bottom: 2px;">Consensus Weakest Link Vulnerability:</strong>
+                  <p style="margin: 0; color: #7c2d12;">${row.weakestPoint}</p>
+                </div>
+                <div style="background-color: #f0fdf4; border-left: 3px solid #22c55e; padding: 8px 12px; border-radius: 4px; font-size: 11.5px;">
+                  <strong style="color: #15803d; text-transform: uppercase; display: block; font-size: 9px; font-family: monospace; margin-bottom: 2px;">Your Defending Directives:</strong>
+                  <p style="margin: 0; color: #14532d;">${row.mustDefend}</p>
                 </div>
               </div>
             </div>
@@ -751,7 +1256,7 @@ export function exportSessionToPrintableHTML(session: CramSession): string {
   <div class="document-wrapper">
     <header class="doc-header">
       <div class="doc-header-top">
-        <span class="doc-badge">${presetId === 'crammer' ? 'Exhaustive Cheat Sheet' : presetId === 'flashcards' ? 'Active Recall Flashcards' : presetId === 'quiz' ? 'Practice Exam Booklet' : 'Feynman Study Companion'}</span>
+        <span class="doc-badge">${badgeLabel}</span>
         <span class="doc-meta" style="font-family: 'JetBrains Mono', monospace;">Created: ${createdAt}</span>
       </div>
       <h1 class="doc-title">${title}</h1>
