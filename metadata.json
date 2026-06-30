@@ -1,0 +1,8 @@
+{
+  "name": "Remix: AI Exam Crammer",
+  "description": "An AI-powered last-minute exam preparation tool that generates high-fidelity structured study guides and cheat sheets from course notes and PDFs.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

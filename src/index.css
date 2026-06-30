@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Custom scrollbar to match the high-fidelity dark cosmic theme */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0f1016;
+}
+::-webkit-scrollbar-thumb {
+  background: #272a37;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3b3f54;
+}
+
+/* 3D Book Animation Helpers */
+.perspective-1500 {
+  perspective: 1500px;
+}
+.perspective-1000 {
+  perspective: 1000px;
+}
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+}
+.transform-origin-left {
+  transform-origin: left;
+}
+.transform-origin-right {
+  transform-origin: right;
+}
+
+@keyframes float-gentle {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px) rotateY(-20deg) rotateX(15deg) rotateZ(-5deg);
+  }
+  50% {
+    transform: translateY(-12px) translateX(0px) rotateY(-18deg) rotateX(12deg) rotateZ(-4deg);
+  }
+}
+
+.animate-float-book {
+  animation: float-gentle 4s ease-in-out infinite;
+}
+
+.bg-radial-gradient-portal {
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, rgba(99, 102, 241, 0) 70%);
+}
+
+/* --- SYSTEM 1.B AND SYSTEM 16 ADDITIONS --- */
+
+@keyframes grid-pulse {
+  0%, 100% { opacity: 0.03; }
+  50% { opacity: 0.07; }
+}
+.bg-grid-animated {
+  background-image: linear-gradient(to right, #8080800a 1px, transparent 1px),
+    linear-gradient(to bottom, #8080800a 1px, transparent 1px);
+  background-size: 30px 30px;
+  animation: grid-pulse 8s ease-in-out infinite;
+}
+
+/* Shimmer animation for loading skeletons */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 25%, rgba(99,102,241,0.08) 50%, transparent 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Glow pulse for key UI elements */
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 rgba(99,102,241,0); }
+  50% { box-shadow: 0 0 20px rgba(99,102,241,0.2); }
+}
+.animate-glow {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+/* Text gradient animation */
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.animate-gradient-text {
+  background-size: 200% 200%;
+  animation: gradient-shift 4s ease infinite;
+}
+
+/* Scale breathe for empty states */
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+.animate-breathe {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+/* Scan line effect for loading / AI processing states */
+@keyframes scan-line {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(400%); }
+}
+.scan-line::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(99,102,241,0.6), transparent);
+  animation: scan-line 2s ease-in-out infinite;
+}
+
+/* Reduced motion overrides */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-book,
+  .animate-shimmer,
+  .animate-glow,
+  .animate-gradient-text,
+  .animate-breathe,
+  .bg-grid-animated,
+  .scan-line::after {
+    animation: none !important;
+  }
+}
+
+
+

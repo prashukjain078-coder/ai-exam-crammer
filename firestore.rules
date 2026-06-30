@@ -1,0 +1,9 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny: Secure database by blocking all public direct read/write client access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

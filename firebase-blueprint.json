@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User account containing login credentials",
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "description": "The unique username of the user"
+        },
+        "passwordHash": {
+          "type": "string",
+          "description": "Bcrypt hashed password"
+        }
+      },
+      "required": [
+        "username",
+        "passwordHash"
+      ]
+    },
+    "Session": {
+      "title": "Session",
+      "description": "Saved study session containing generated cheat sheets or materials",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique session ID"
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner user ID"
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the session"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Formatted creation timestamp"
+        },
+        "fileName": {
+          "type": "string",
+          "description": "The uploaded source filename"
+        },
+        "fileSize": {
+          "type": "string",
+          "description": "The uploaded source filesize"
+        },
+        "presetId": {
+          "type": "string",
+          "description": "The selected study preset (e.g., crammer, quiz, flashcards)"
+        },
+        "cheatSheet": {
+          "type": "string",
+          "description": "JSON string containing the generated materials"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "title"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{username}": {
+      "schema": "User",
+      "description": "Collection of registered user documents"
+    },
+    "/sessions/{sessionId}": {
+      "schema": "Session",
+      "description": "Collection of saved crammer study sessions"
+    }
+  }
+}
